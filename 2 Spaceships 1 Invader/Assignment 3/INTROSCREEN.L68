@@ -1,0 +1,294 @@
+00000000 Starting Address
+Assembler used: EASy68K Editor/Assembler v5.16.01
+Created On: 10/19/2021 11:07:33 PM
+
+00000000                             1  *-----------------------------------------------------------
+00000000                             2  * Title      :
+00000000                             3  * Written by :
+00000000                             4  * Date       :
+00000000                             5  * Description:
+00000000                             6  *-----------------------------------------------------------
+00000000                             7  
+00000000  =00000000                  8  BITMAP_CHUNK_TOP_X2 EQU 0
+00000000  =00000000                  9  BITMAP_CHUNK_TOP_Y2 EQU 0
+00000000  =00000280                 10  BITMAP_CHUNK_WIDTH2 EQU 640
+00000000  =000001E0                 11  BITMAP_CHUNK_HEIGHT2 EQU 480
+Line 12 ERROR: Undefined symbol
+00000000                            12  BITMAP_CHUNK_Y_START_POS2 EQU BITMAP_CHUNK_TOP_Y+BITMAP_CHUNK_HEIGHT
+Line 13 ERROR: Undefined symbol
+00000000                            13  BITMAP_CHUNK_X_END_POS2 EQU BITMAP_CHUNK_TOP_X+BITMAP_CHUNK_WIDTH
+00000000  =00000000                 14  PRINT_TOP_X2 EQU 0
+00000000  =00000000                 15  PRINT_TOP_Y2 EQU 0
+00000000                            16  
+00000000                            17  
+00000000                            18  drawIntro:
+00000000                            19  ;PrintCrop:
+00000000                            20  ;Reads the size of the bmp in bytes, and grabs offset for starting location of pixel array, store both in mem     
+00000000                            21      ;First grab the size of the file
+00000000  43F9 000001A4             22       lea bmpFile2,a1
+00000006  45F9 0000018E             23       lea bmpFileSize2, a2
+Line 24 ERROR: Undefined symbol
+0000000C  2229 BD16                 24       move.l BMP_FILE_SIZE_OFFSET(a1), d1
+00000010                            25       
+00000010                            26      ;Size is written in Litten-Endian, so rol -> swap -> rol to get Big-Endian val
+00000010  E159                      27       rol.w #8, d1                   
+00000012  4841                      28       swap.w d1
+00000014  E159                      29       rol.w #8, d1
+00000016  2481                      30       move.l d1, (a2)                ;Save Big-Endian value to memory
+00000018                            31       
+00000018                            32       
+00000018                            33       ;Now grab offset for start of pixel data (also Little-Endian, so must convert), and store in memory
+00000018  45F9 00000192             34       lea bmpPixelOffset2, a2
+Line 35 ERROR: Undefined symbol
+0000001E  2429 BD16                 35       move.l BMP_START_ADDRESS_OFFSET(a1), d2
+00000022  4842                      36       swap.w d2
+00000024  E15A                      37       rol.w #8, d2
+00000026  2482                      38       move.l d2, (a2)
+00000028                            39  
+00000028                            40       
+00000028                            41  ;Now grab the Width, Height, Bit Depth, calculate padding, and store them in mem:
+00000028  43F9 000001A4             42       lea bmpFile2, a1
+0000002E  45F9 00000196             43       lea bmpFileWidth2, a2
+00000034  47F9 0000019A             44       lea bmpFileHeight2, a3
+0000003A  49F9 000001A2             45       lea bmpFilePadding2, a4
+00000040  4BF9 0000019E             46       lea bmpBitDepth2, a5
+00000046                            47       
+Line 48 ERROR: Undefined symbol
+00000046  2229 BD16                 48       move.l BMP_WIDTH_OFFSET(a1), d1
+Line 49 ERROR: Undefined symbol
+0000004A  2429 BD16                 49       move.l BMP_HEIGHT_OFFSET(a1), d2
+Line 50 ERROR: Undefined symbol
+0000004E  2629 BD16                 50       move.l BMP_BITDEPTH_OFFSET(a1), d3
+00000052                            51       
+00000052                            52       ;Again, switching from Little-Endian -> Big-Endian
+00000052  4841                      53       swap.w d1
+00000054  E159                      54       rol.w #8, d1
+00000056  4842                      55       swap.w d2
+00000058  E15A                      56       rol.w #8, d2
+0000005A  4843                      57       swap.w d3
+0000005C  E15B                      58       rol.w #8, d3
+0000005E                            59       
+0000005E  3481                      60       move.w d1, (a2)
+00000060  3682                      61       move.w d2, (a3)
+00000062  3A83                      62       move.w d3, (a5)
+00000064  84FC 0004                 63       divu #4, d2
+00000068                            64       
+00000068  4842                      65       swap d2            ;Padding
+0000006A  3882                      66       move.w d2, (a4)
+0000006C                            67       
+0000006C                            68       
+0000006C                            69  ;Add pixel offset to starting address of bitmap to start reading pixels
+0000006C  4241                      70      clr d1
+0000006E  4242                      71      clr d2
+00000070  45F9 00000192             72      lea bmpPixelOffset2, a2
+00000076  2412                      73      move.l (a2), d2
+00000078  D3C2                      74      adda.l d2, a1
+0000007A                            75  
+0000007A                            76  ;Prepare regs for drawing loop
+0000007A                            77  ;d0 - Trap Code
+0000007A                            78  ;d1 - 2 purposes; hold value for pixel color, and then hold value of X-coord for drawing
+0000007A                            79  ;d2 - Holds value of Y-coord for drawing, initialized to Height, but changes to BITMAP_CHUNK_Y_START_POS for crop
+0000007A                            80  ;d3 - Holds the value of the width of the file, used to compare agains the X-coord
+0000007A                            81  ;d4 - Since d1 has 2 purposes, we need to save off the position of the X-coord when we reset pixel color, so store into d4 before loop restarts
+0000007A                            82  ;d5 - Number of bytes to skip to get to start of crop
+0000007A                            83  ;d6 - Number of bytes to skip on each iteration of loop
+0000007A                            84  ;d7 - Extra reg to copy values and add/divide
+0000007A                            85  
+0000007A  4240                      86      clr d0
+0000007C  4241                      87      clr d1
+0000007E  4242                      88      clr d2
+00000080                            89      
+00000080  45F9 00000196             90      lea bmpFileWidth2, a2
+00000086  47F9 0000019A             91      lea bmpFileHeight2, a3
+0000008C  49F9 000001A2             92      lea bmpFilePadding2, a4
+00000092  4BF9 0000019E             93      lea bmpBitDepth2, a5
+00000098  3612                      94      move.w (a2), d3
+0000009A  3413                      95      move.w (a3), d2
+0000009C  3E15                      96      move.w (a5), d7
+0000009E  0C47 0020                 97      cmpi.w #32, d7                  ;Check the bit depth of the file, depending if 24 or 32 bit, our math slightly changes
+000000A2  6700 003C                 98      beq BitDepth322
+000000A6                            99  
+000000A6                           100  ;Branch for 24bit files, will calculate how much of image to skip/crop
+000000A6                           101  BitDepth242:    
+000000A6                           102      ;This arithmetic will give us the number of bytes to skip to start our crop
+000000A6                           103      ;Formula is: ((bmpFileHeight - (Bitmap_Chunk_Top_Y+Bitmap_Chunk_Height))*Bitmap_Chunk_Width + Bitmap_Chunk_Top_X
+000000A6  2A02                     104      move.l d2, d5
+Line 105 ERROR: Undefined symbol
+000000A8  0485 004DBD16            105      sub.l  #BITMAP_CHUNK_Y_START_POS2, d5
+000000AE  CAC3                     106      mulu d3, d5
+000000B0  0685 00000000            107      addi.l #BITMAP_CHUNK_TOP_X2, d5
+000000B6  2E05                     108      move.l d5, d7
+000000B8  DA87                     109      add.l d7, d5
+000000BA  DA87                     110      add.l d7, d5
+000000BC                           111      
+000000BC  D3C5                     112      adda.l d5, a1
+000000BE                           113      
+000000BE                           114      ;This arithmetic will give us the number of bytes to skip during each iteration of the loop
+000000BE                           115      ;Formual is: (bmpFileWidth - Bitmap_Chunk_Width) * 3
+000000BE  2C03                     116      move.l d3, d6
+000000C0  0486 00000280            117      subi.l #BITMAP_CHUNK_WIDTH2, d6
+000000C6  2E06                     118      move.l d6, d7
+000000C8  DC87                     119      add.l d7, d6
+000000CA  DC87                     120      add.l d7, d6
+000000CC                           121      
+000000CC  243C 000001E0            122      move.l #(PRINT_TOP_Y2+BITMAP_CHUNK_HEIGHT2), d2
+000000D2  263C 00000280            123      move.l #(PRINT_TOP_X2+BITMAP_CHUNK_WIDTH2), d3
+000000D8  7800                     124      move.l #PRINT_TOP_X2, d4
+000000DA                           125      
+000000DA  4EF9 00000150            126      jmp ContinueRow242
+000000E0                           127  
+000000E0                           128  ;Branch for 32 bit images, will calculate how much of the image to skip/crop    
+000000E0                           129  BitDepth322:
+000000E0                           130      ;This arithmetic will give us the number of bytes to skip to start our crop
+000000E0                           131      ;Formula is: ((bmpFileHeight - (Bitmap_Chunk_Top_Y+Bitmap_Chunk_Height))*Bitmap_Chunk_Width + Bitmap_Chunk_Top_X
+000000E0  2A02                     132      move.l d2, d5
+Line 133 ERROR: Undefined symbol
+000000E2  0485 004DBD16            133      sub.l  #BITMAP_CHUNK_Y_START_POS2, d5
+000000E8  CAC3                     134      mulu d3, d5
+000000EA  0685 00000000            135      addi.l #BITMAP_CHUNK_TOP_X2, d5
+000000F0  2E05                     136      move.l d5, d7
+000000F2  DA87                     137      add.l d7, d5
+000000F4  DA87                     138      add.l d7, d5
+000000F6  DA87                     139      add.l d7, d5
+000000F8                           140      
+000000F8  D3C5                     141      adda.l d5, a1
+000000FA                           142      
+000000FA                           143      ;This arithmetic will give us the number of bytes to skip during each iteration of the loop
+000000FA                           144      ;Formual is: (bmpFileWidth - Bitmap_Chunk_Width) * 4
+000000FA  2C03                     145      move.l d3, d6
+000000FC  0486 00000280            146      subi.l #BITMAP_CHUNK_WIDTH2, d6
+00000102  2E06                     147      move.l d6, d7
+00000104  DC87                     148      add.l d7, d6
+00000106  DC87                     149      add.l d7, d6
+00000108  DC87                     150      add.l d7, d6
+0000010A                           151      
+0000010A  243C 000001E0            152      move.l #(PRINT_TOP_Y2+BITMAP_CHUNK_HEIGHT2), d2
+00000110  263C 00000280            153      move.l #(PRINT_TOP_X2+BITMAP_CHUNK_WIDTH2), d3
+00000116  7800                     154      move.l #PRINT_TOP_X2, d4
+00000118                           155    
+00000118                           156    
+00000118                           157  ;Loop to print the 32 bit file. 32 bit bitmaps have 4 bytes per pixel, so just move.l
+00000118                           158  ContinueRow322:
+00000118  4241                     159      clr d1 
+0000011A                           160    
+0000011A  2219                     161      move.l (a1)+, d1
+0000011C  E099                     162      ror.l #8, d1
+Line 163 ERROR: Undefined symbol
+0000011E  203C 004DBD16            163      move.l #PEN_COLOR_TRAP_CODE, d0
+00000124  4E4F                     164      trap #15
+00000126  4241                     165      clr d1
+00000128                           166      
+00000128                           167      ;d1 is being used twice in this loop (pixel color, and draw pixel x coordinate),
+00000128                           168      ;so copy X-coord value into d4 every time to save, and move back during each iteration of the loop
+00000128  2204                     169      move.l d4, d1
+Line 170 ERROR: Undefined symbol
+0000012A  203C 004DBD16            170      move.l #DRAW_PIXEL_TRAP_CODE, d0
+00000130  4E4F                     171      trap #15
+00000132                           172      
+00000132  5241                     173      addi #1, d1                             ;Increment X-coord
+00000134  2801                     174      move.l d1, d4                           :Copy X-coord
+00000136  B681                     175      cmp.l d1, d3 
+00000138  66DE                     176      bne ContinueRow322
+0000013A  3E14                     177      move.w (a4), d7                         ;Get file padding, add it to address when we reach end of row
+0000013C  D3C7                     178      adda.l d7, a1
+0000013E  7200                     179      move.l #PRINT_TOP_X2, d1                 ;If we reach here, reset X-coord to default value (and copy into d4 to save)
+00000140  7800                     180      move.l #PRINT_TOP_X2, d4          
+00000142  5382                     181      subi.l #1, d2                           ;DECREMENT Y-coord, remember we start at BOTTOM not TOP of screen, so subtract
+00000144  D3C6                     182      adda.l d6, a1
+00000146  0C82 00000000            183      cmpi.l #PRINT_TOP_Y2, d2
+0000014C  66CA                     184      bne ContinueRow322
+0000014E                           185      
+0000014E  4E75                     186      rts
+00000150                           187  
+00000150                           188  ;Loop to print 24 bit file.then we calculate the crop position based on the input parameters we were given, and the amount of bytes to skip in the pixel array
+00000150                           189  ;as calculated above
+00000150                           190  ContinueRow242:
+00000150  4241                     191      clr d1 
+00000152                           192       
+00000152                           193      ;Grab the pixel color RGB value from the array. Since this works on 24-bit files, we cannot load in words or longs,
+00000152                           194      ;so we must load in the pixel values one byte at a time. After loading in the first byte, we must swap in order to put it into it's correct position
+00000152                           195      ;Then for the second byte we must read and roll it left 8 bytes to get THAT color in it's correct position
+00000152  1219                     196      move.b (a1)+, d1
+00000154  4841                     197      swap d1
+00000156  1219                     198      move.b (a1)+, d1
+00000158  E159                     199      rol.w #8, d1
+0000015A  1219                     200      move.b (a1)+, d1
+Line 201 ERROR: Undefined symbol
+0000015C  203C 004DBD16            201      move.l #PEN_COLOR_TRAP_CODE, d0
+00000162  4E4F                     202      trap #15
+00000164  4241                     203      clr d1
+00000166                           204      
+00000166                           205      ;d1 is being used twice in this loop (pixel color, and draw pixel x coordinate),
+00000166                           206      ;so copy X-coord value into d4 every time to save, and move back during each iteration of the loop
+00000166  2204                     207      move.l d4, d1
+Line 208 ERROR: Undefined symbol
+00000168  203C 004DBD16            208      move.l #DRAW_PIXEL_TRAP_CODE, d0
+0000016E  4E4F                     209      trap #15
+00000170                           210      
+00000170  5241                     211      addi #1, d1                             ;Increment X-coord
+00000172  2801                     212      move.l d1, d4                           :Copy X-coord
+00000174  B681                     213      cmp.l d1, d3 
+00000176  66D8                     214      bne ContinueRow242
+00000178  3E14                     215      move.w (a4), d7                         ;Get file padding, add it to address when we reach end of row
+0000017A  D3C7                     216      adda.l d7, a1
+0000017C  7200                     217      move.l #PRINT_TOP_X2, d1                 ;If we reach here, reset X-coord to default value (and copy into d4 to save)
+0000017E  7800                     218      move.l #PRINT_TOP_X2, d4          
+00000180  5382                     219      subi.l #1, d2                           ;DECREMENT Y-coord, remember we start at BOTTOM not TOP of screen, so subtract
+00000182  D3C6                     220      adda.l d6, a1
+00000184  0C82 00000000            221      cmpi.l #PRINT_TOP_Y2, d2
+0000018A  66C4                     222      bne ContinueRow242
+0000018C                           223      
+0000018C  4E75                     224      rts 
+0000018E                           225      
+0000018E                           226   
+0000018E                           227      
+0000018E                           228           
+0000018E                           229  
+0000018E                           230  
+0000018E                           231  ;Mem to store the size of img file
+0000018E                           232  bmpFileSize2 ds.l 1
+00000192                           233  
+00000192                           234  ;Mem to store offset of pixel array location in file
+00000192                           235  bmpPixelOffset2 ds.l 1
+00000196                           236  
+00000196                           237  ;Mem to store bitmap file width
+00000196                           238  bmpFileWidth2 ds.l 1
+0000019A                           239  
+0000019A                           240  ;Mem to store bitmap file height
+0000019A                           241  bmpFileHeight2 ds.l 1
+0000019E                           242  
+0000019E                           243  ;Mem to store Bit Depth of file
+0000019E                           244  bmpBitDepth2 ds.l 1
+000001A2                           245  
+000001A2                           246  ;Mem to store padding for file sizes non-divisible by 4
+000001A2                           247  bmpFilePadding2 ds.w 1
+000001A4                           248  
+000001A4                           249  ;Mem to store actual array info of the bitmap, place in same directory as source file
+000001A4                           250  bmpFile2 INCBIN 'introScreen.bmp'
+Line 251 WARNING: END directive missing, starting address not set
+
+13 errors detected
+1 warning generated
+
+
+SYMBOL TABLE INFORMATION
+Symbol-name         Value
+-------------------------
+BITDEPTH242         A6
+BITDEPTH322         E0
+BITMAP_CHUNK_HEIGHT2  1E0
+BITMAP_CHUNK_TOP_X2  0
+BITMAP_CHUNK_TOP_Y2  0
+BITMAP_CHUNK_WIDTH2  280
+BMPBITDEPTH2        19E
+BMPFILE2            1A4
+BMPFILEHEIGHT2      19A
+BMPFILEPADDING2     1A2
+BMPFILESIZE2        18E
+BMPFILEWIDTH2       196
+BMPPIXELOFFSET2     192
+CONTINUEROW242      150
+CONTINUEROW322      118
+DRAWINTRO           0
+PRINT_TOP_X2        0
+PRINT_TOP_Y2        0

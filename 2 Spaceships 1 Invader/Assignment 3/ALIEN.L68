@@ -1,0 +1,306 @@
+00000000 Starting Address
+Assembler used: EASy68K Editor/Assembler v5.16.01
+Created On: 10/18/2021 2:47:49 PM
+
+00000000                             1  *-----------------------------------------------------------
+00000000                             2  * Title      : Alien
+00000000                             3  * Written by :
+00000000                             4  * Date       :
+00000000                             5  * Description:
+00000000                             6  *-----------------------------------------------------------
+00000000                             7  
+00000000  =00000008                  8  GET_TIME_COMMAND equ 8
+00000000  =00000050                  9  SET_PEN_COLOR_COMMAND equ 80
+00000000  =00000051                 10  FILL_COLOR_COMMAND equ 81
+00000000  =00000053                 11  GET_PIXEL_COLOR_COMMAND equ 83
+00000000  =00000057                 12  DRAW_RECTANGLE_COMMAND equ 87
+00000000                            13  
+00000000  =0000000E                 14  ALIEN_WIDTH equ 14
+00000000  =0000000E                 15  ALIEN_HEIGHT equ 14
+00000000  =00000014                 16  ALIEN_TOP_Y_POSITION equ 20
+00000000  =00000064                 17  ALIEN_START_X_POSITION equ 100
+00000000  =00000001                 18  ALIEN_DOWN_VELOCITY equ 1
+00000000  =00000005                 19  ALIEN_RIGHT_VELOCITY equ 5
+00000000  =FFFFFFFB                 20  ALIEN_LEFT_VELOCITY equ -5
+00000000  =00000001                 21  ALIEN_DOWN_ACCELERATION equ 1
+00000000                            22  
+00000000  =00000258                 23  BOTTOM_SIDE_OF_SCREEN equ 600
+00000000  =0000000F                 24  SUM_OF_RADII equ 15
+00000000  =000000E1                 25  SUM_OF_RADII_SQUARED equ 225
+00000000                            26  
+00000000                            27  
+00000000  =000000FF                 28  RED equ $000000FF
+00000000  =00FFFFFF                 29  RANDOM_MASK equ $FFFFFF
+00000000                            30  
+00000000                            31  initAlien:
+00000000  4EB9 0000017A             32      jsr generateRandomSpawnPoint
+00000006                            33  
+00000006                            34      ;move.l #ALIEN_START_X_POSITION, d7
+00000006  7414                      35      move.l #ALIEN_TOP_Y_POSITION, d2
+00000008                            36      
+00000008  41F9 000001A0             37      lea alienTableX1, a0
+0000000E  43F9 00000240             38      lea alienTableY1, a1
+00000014  45F9 000001F0             39      lea alienTableX2, a2
+0000001A  47F9 00000290             40      lea alienTableY2, a3
+00000020                            41      
+00000020  2087                      42      move.l d7, (a0)
+00000022  2487                      43      move.l d7, (a2)
+00000024  2282                      44      move.l d2, (a1)
+00000026  2682                      45      move.l d2, (a3)
+00000028  0692 0000000E             46      addi.l #ALIEN_WIDTH, (a2)
+0000002E  0693 0000000E             47      addi.l #ALIEN_HEIGHT, (a3)
+00000034                            48      
+00000034  4E75                      49      rts
+00000036                            50      
+00000036                            51  updateAlien:
+Line 52 ERROR: Undefined symbol
+00000036                            52      movem.l ALL_REG, -(sp)
+00000036                            53      
+00000036  41F9 000001A0             54      lea alienTableX1, a0
+0000003C  43F9 00000240             55      lea alienTableY1, a1
+00000042  45F9 000001F0             56      lea alienTableX2, a2
+00000048  47F9 00000290             57      lea alienTableY2, a3
+0000004E  49F9 00000198             58      lea LeftToRightFlag, a4
+00000054  4BF9 0000019C             59      lea UpAndDownFlag, a5
+0000005A  4DF9 00000194             60      lea alienDownVelocity, a6
+00000060                            61      
+00000060  2210                      62      move.l (a0), d1
+00000062  2411                      63      move.l (a1), d2
+00000064  2612                      64      move.l (a2), d3
+00000066  2813                      65      move.l (a3), d4
+00000068                            66      
+00000068  0C95 00000001             67      cmpi.l #1, (a5)
+0000006E                            68      ;beq skipVertical
+0000006E                            69      
+0000006E                            70      ;addi.l #ALIEN_DOWN_VELOCITY, d2         ;Update position
+0000006E  D496                      71      add.l (a6), d2
+00000070  5295                      72      addi.l #1, (a5)                     ;Update UP-Down flag
+00000072  0C82 00024A00             73      cmpi.l #(BOTTOM_SIDE_OF_SCREEN-ALIEN_HEIGHT)<<8, d2
+00000078  6C00 0036                 74      bge deleteAlien
+0000007C                            75      
+0000007C  2081                      76      move.l d1, (a0)
+0000007E  2282                      77      move.l d2, (a1)
+Line 78 ERROR: Undefined symbol
+00000080                            78      movem.l (sp)+, ALL_REG
+00000080  4E75                      79      rts
+00000082                            80  skipVertical:
+00000082  5395                      81      subi.l #1, (a5)    
+00000084  0C94 00000000             82      cmpi.l #0, (a4)
+0000008A  6700 0006                 83      beq moveLeft
+0000008E  6000 0010                 84      bra moveRight
+00000092                            85       
+00000092                            86  moveLeft:
+00000092                            87      ;addi.l #ALIEN_LEFT_VELOCITY, d1
+00000092                            88      
+00000092  4BF9 00000198             89      lea LeftToRightFlag, a5
+00000098  5295                      90      addi.l #1, (a5)
+0000009A  2081                      91      move.l d1, (a0)
+0000009C  2282                      92      move.l d2, (a1)
+0000009E                            93      
+Line 94 ERROR: Undefined symbol
+0000009E                            94      movem.l (sp)+, ALL_REG
+0000009E  4E75                      95      rts
+000000A0                            96  moveRight:
+000000A0  5A81                      97      addi.l #ALIEN_RIGHT_VELOCITY, d1
+000000A2                            98      
+000000A2  4BF9 00000198             99      lea LeftToRightFlag, a5
+000000A8  5395                     100      subi.l #1, (a5)
+000000AA  2081                     101      move.l d1, (a0)
+000000AC  2282                     102      move.l d2, (a1)
+000000AE                           103      
+Line 104 ERROR: Undefined symbol
+000000AE                           104      movem.l (sp)+, ALL_REG
+000000AE  4E75                     105      rts
+000000B0                           106  deleteAlien:
+000000B0  4EB8 0000                107      jsr initAlien
+000000B4                           108      
+Line 109 ERROR: Undefined symbol
+000000B4                           109      movem.l (sp)+, ALL_REG
+000000B4  4E75                     110      rts
+000000B6                           111      
+000000B6                           112  drawAlien:
+Line 113 ERROR: Undefined symbol
+000000B6                           113      movem.l ALL_REG, -(sp)
+000000B6                           114      
+000000B6  223C 000000FF            115      move.l #RED, d1
+000000BC  103C 0050                116      move.b #SET_PEN_COLOR_COMMAND, d0
+000000C0  4E4F                     117      trap #15
+Line 118 ERROR: Undefined symbol
+000000C2  103C 0016                118      move.b #SET_FILL_COLOR_COMMAND, d0
+000000C6  4E4F                     119      trap #15
+000000C8                           120      
+000000C8  41F9 000001A0            121      lea alienTableX1, a0
+000000CE  43F9 00000240            122      lea alienTableY1, a1
+000000D4  45F9 000001F0            123      lea alienTableX2, a2
+000000DA  47F9 00000290            124      lea alienTableY2, a3
+000000E0                           125      
+Line 126 ERROR: Undefined symbol
+000000E0  103C 0016                126      move.b #DRAW_CIRCLE_COMMAND, d0
+000000E4  2210                     127      move.l (a0), d1
+000000E6  2411                     128      move.l (a1), d2
+000000E8  E082                     129      asr.l #8, d2
+000000EA  2601                     130      move.l d1, d3
+000000EC  2802                     131      move.l d2, d4
+000000EE  0684 0000000E            132      add.l #ALIEN_HEIGHT, d4
+000000F4  0683 0000000E            133      add.l #ALIEN_WIDTH, d3
+000000FA  4E4F                     134      trap #15
+000000FC                           135      
+Line 136 ERROR: Undefined symbol
+000000FC                           136      movem.l (sp)+, ALL_REG
+000000FC  4E75                     137      rts
+000000FE                           138  
+000000FE                           139  detectCollision:
+Line 140 ERROR: Undefined symbol
+000000FE                           140      movem.l ALL_REG, -(sp)
+000000FE                           141  
+Line 142 ERROR: Undefined symbol
+000000FE  43F9 004DBD16            142      lea numBullets, a1
+00000104  2211                     143      move.l (a1), d1
+00000106  0C81 00000000            144      cmpi.l #0, d1
+0000010C  6700 006A                145      beq skip    
+00000110                           146      
+Line 147 ERROR: Undefined symbol
+00000110  41F9 004DBD16            147      lea bulletTableX1, a0
+Line 148 ERROR: Undefined symbol
+00000116  43F9 004DBD16            148      lea bulletTableY1, a1
+0000011C  45F9 000001A0            149      lea alienTableX1, a2
+00000122  47F9 00000240            150      lea alienTableY1, a3
+00000128                           151      
+00000128  2210                     152      move.l (a0), d1
+Line 153 ERROR: Invalid syntax
+0000012A                           153      add.l #(BULLET_WIDTH/2), d1
+0000012A  2411                     154      move.l (a1), d2
+0000012C  E082                     155      asr.l #8, d2
+Line 156 ERROR: Invalid syntax
+0000012E                           156      add.l #(BULLET_HEIGHT/2), d2
+0000012E                           157      
+0000012E  2612                     158      move.l (a2), d3
+00000130  5E83                     159      add.l #(ALIEN_WIDTH/2), d3
+00000132  2813                     160      move.l (a3), d4
+00000134  E084                     161      asr.l #8, d4
+00000136  5E84                     162      add.l #(ALIEN_HEIGHT/2), d4
+00000138                           163      
+00000138  9681                     164      sub.l d1, d3
+0000013A  C7C3                     165      muls d3, d3
+0000013C  9882                     166      sub.l d2, d4
+0000013E  C9C4                     167      muls d4, d4
+00000140                           168      
+00000140  D684                     169      add.l d4, d3
+00000142                           170      
+00000142  0C83 000000E1            171      cmpi.l #SUM_OF_RADII_SQUARED, d3
+00000148  6F00 0010                172      ble delete
+0000014C                           173      
+0000014C                           174      
+Line 175 ERROR: Undefined symbol
+0000014C                           175      movem.l (sp)+, ALL_REG
+0000014C  4E75                     176      rts
+0000014E                           177      
+0000014E                           178      
+Line 179 ERROR: Symbol value differs between first and second pass
+0000014E                           179  delete:
+0000014E                           180      ;Delete Bullet
+Line 181 ERROR: Undefined symbol
+0000014E  41F9 004DBD16            181      lea numBullets, a0
+00000154  5390                     182      subi.l #1, (a0)
+00000156                           183      
+00000156                           184      ;Increase velocity
+00000156  41F9 00000194            185      lea alienDownVelocity, a0
+0000015C  5290                     186      addi.l #1, (a0)
+0000015E                           187      
+0000015E                           188      ;Increase score
+0000015E  41F9 000002E0            189      lea TotalScore, a0
+00000164  5290                     190      addi.l #1, (a0)
+00000166                           191      
+00000166                           192      ;DeleteAlien
+00000166  4EB8 0000                193      jsr initAlien
+0000016A                           194      
+Line 195 ERROR: Undefined symbol
+0000016A                           195      movem.l (sp)+, ALL_REG
+0000016A  4E75                     196      rts
+0000016C                           197  
+Line 198 ERROR: Symbol value differs between first and second pass
+0000016C                           198  skip:
+Line 199 ERROR: Undefined symbol
+0000016C                           199      movem.l (sp)+, ALL_REG,
+0000016C  4E75                     200      rts
+0000016E                           201      
+Line 202 ERROR: Symbol value differs between first and second pass
+0000016E                           202  generateRandomSpawnPoint:
+0000016E  4247                     203      clr d7
+00000170                           204      
+00000170  103C 0008                205      move.b #GET_TIME_COMMAND, d0
+00000174  4E4F                     206      trap #15
+00000176                           207      
+00000176  0281 00FFFFFF            208      andi.l #$FFFFFF, d1
+0000017C  82FC 0258                209      divu #600, d1
+00000180  4841                     210      swap d1
+00000182  5241                     211      addq.w #1, d1
+00000184  3E01                     212      move.w d1, d7
+00000186                           213      
+00000186  4E75                     214      rts
+00000188                           215      
+Line 216 ERROR: Symbol value differs between first and second pass
+00000188=                          216  alienDownVelocity dc.l 1    
+Line 217 ERROR: Symbol value differs between first and second pass
+00000188=                          217  LeftToRightFlag dc.l 0
+Line 218 ERROR: Symbol value differs between first and second pass
+00000188=                          218  UpAndDownFlag dc.l 0
+00000188                           219  
+Line 220 ERROR: Symbol value differs between first and second pass
+00000188                           220  alienTableX1: ds.l 20
+Line 221 ERROR: Symbol value differs between first and second pass
+00000188                           221  alienTableX2: ds.l 20
+Line 222 ERROR: Symbol value differs between first and second pass
+00000188                           222  alienTableY1: ds.l 20
+Line 223 ERROR: Symbol value differs between first and second pass
+00000188                           223  alienTableY2: ds.l 20
+00000188                           224  
+Line 225 ERROR: Symbol value differs between first and second pass
+00000188=                          225  TotalScore dc.l 0
+00000188                           226  
+Line 227 WARNING: END directive missing, starting address not set
+
+30 errors detected
+1 warning generated
+
+
+SYMBOL TABLE INFORMATION
+Symbol-name         Value
+-------------------------
+ALIENDOWNVELOCITY   194
+ALIENTABLEX1        1A0
+ALIENTABLEX2        1F0
+ALIENTABLEY1        240
+ALIENTABLEY2        290
+ALIEN_DOWN_ACCELERATION  1
+ALIEN_DOWN_VELOCITY  1
+ALIEN_HEIGHT        E
+ALIEN_LEFT_VELOCITY  FFFFFFFB
+ALIEN_RIGHT_VELOCITY  5
+ALIEN_START_X_POSITION  64
+ALIEN_TOP_Y_POSITION  14
+ALIEN_WIDTH         E
+BOTTOM_SIDE_OF_SCREEN  258
+DELETE              15A
+DELETEALIEN         B0
+DETECTCOLLISION     FE
+DRAWALIEN           B6
+DRAW_RECTANGLE_COMMAND  57
+FILL_COLOR_COMMAND  51
+GENERATERANDOMSPAWNPOINT  17A
+GET_PIXEL_COLOR_COMMAND  53
+GET_TIME_COMMAND    8
+INITALIEN           0
+LEFTTORIGHTFLAG     198
+MOVELEFT            92
+MOVERIGHT           A0
+RANDOM_MASK         FFFFFF
+RED                 FF
+SET_PEN_COLOR_COMMAND  50
+SKIP                178
+SKIPVERTICAL        82
+SUM_OF_RADII        F
+SUM_OF_RADII_SQUARED  E1
+TOTALSCORE          2E0
+UPANDDOWNFLAG       19C
+UPDATEALIEN         36

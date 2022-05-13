@@ -1,0 +1,171 @@
+00000000 Starting Address
+Assembler used: EASy68K Editor/Assembler v5.16.01
+Created On: 10/19/2021 4:27:43 PM
+
+00000000                             1  *-----------------------------------------------------------
+00000000                             2  * Title      : Bullet
+00000000                             3  * Written by :
+00000000                             4  * Date       :
+00000000                             5  * Description: This file handles all of the updating and drawing of the Bullet entity in the game
+00000000                             6  *              This file checks if any bullets are being fired, and if so, to move and draw them across the screen
+00000000                             7  *              Attribute of the bullet can be altered here as well
+00000000                             8  *-----------------------------------------------------------
+00000000                             9  
+00000000                            10  ALL_REG reg D0-D7/A0-A6
+00000000                            11  
+00000000                            12  ;Trap code commands for Bullet
+00000000  =00000050                 13  SET_PEN_COLOR_COMMAND equ 80
+00000000  =00000051                 14  SET_FILL_COLOR_COMMAND equ 81
+00000000  =00000058                 15  DRAW_CIRCLE_COMMAND equ 88
+00000000  =00000013                 16  GET_USER_INPUT_COMMAND equ 19
+00000000                            17  
+00000000                            18  ;EQU values for player height/width, starting position, boundaries, and velocity
+00000000  =00000010                 19  BULLET_WIDTH equ 16
+00000000  =00000010                 20  BULLET_HEIGHT equ 16
+00000000  =0001B328                 21  BULLET_TOP_Y_POSITION equ 111400
+00000000  =00000028                 22  BULLET_STARTING_X_POSITION equ 40
+00000000  =0000001E                 23  BULLET_VELOCITY equ 30
+00000000  =00000001                 24  BULLET_ACCELERATION equ 1
+00000000  =00000000                 25  TOP_SIDE_OF_SCREEN equ 0
+00000000                            26  
+00000000  =00800080                 27  PURPLE equ $00800080
+00000000                            28  
+00000000                            29  *Checks the current number of bullets being fired for the gameLoop
+00000000                            30  checkNumBullets:  
+00000000  48E7 FFFE                 31      movem.l ALL_REG, -(sp)
+00000004                            32    
+00000004                            33      *Compare numBullets to 0. If not 0, then we must update/draw bullets
+Line 34 ERROR: Undefined symbol
+00000004  43F9 004DBD16             34      lea numBullets, a1
+0000000A  2A11                      35      move.l (a1), d5
+0000000C  0C85 00000000             36      cmpi.l #0, d5
+00000012                            37      
+00000012  4CDF 7FFF                 38      movem.l (sp)+, ALL_REG
+00000016  4E75                      39      rts
+00000018                            40   
+00000018                            41  *Updates the position of the bullet after being fired   
+00000018                            42  *Since the bullet only moves vertically, we only mess w/ the Y coordinates
+00000018                            43  updateBullet:
+00000018  48E7 FFFE                 44      movem.l ALL_REG, -(sp)
+0000001C                            45      
+0000001C                            46      *Get current Y coordinate of the bullet, and add velocity to change position
+Line 47 ERROR: Undefined symbol
+0000001C  43F9 004DBD16             47      lea bulletTableY1, a1
+Line 48 ERROR: Undefined symbol
+00000022  45F9 004DBD16             48      lea bulletTableX1, a2
+00000028  7A1E                      49      move.l #BULLET_VELOCITY, d5
+0000002A  2C11                      50      move.l (a1), d6
+0000002C  9C85                      51      sub.l d5,d6
+0000002E                            52  
+0000002E                            53     *Comparison to make sure we don't go beyond the bounds of the top of the screen
+0000002E                            54     *If we do, delete the bulelt
+0000002E  0C86 00000000             55      cmpi.l #(TOP_SIDE_OF_SCREEN)<<8, d6
+00000034  6F00 0064                 56      ble deleteBullet
+00000038                            57      
+00000038  0C92 0000002D             58      cmpi.l #45, (a2)
+0000003E  6F00 005A                 59      ble deleteBullet
+00000042                            60      
+00000042                            61  *Called to return from the deleteBullet function
+00000042                            62  returnFromDelete:
+00000042  22C6                      63      move.l d6, (a1)+
+00000044                            64          
+00000044  4CDF 7FFF                 65      movem.l (sp)+,ALL_REG
+00000048                            66      
+00000048  4E75                      67      rts 
+0000004A                            68              
+0000004A                            69  *Draw the Bullet at it's current updated position
+0000004A                            70  drawBullet:
+0000004A  48E7 FFFE                 71      movem.l ALL_REG, -(sp)
+0000004E                            72      
+0000004E  223C 00800080             73      move.l #PURPLE, d1
+00000054  103C 0050                 74      move.b #SET_PEN_COLOR_COMMAND, d0
+00000058  4E4F                      75      trap #15
+0000005A  103C 0051                 76      move.b #SET_FILL_COLOR_COMMAND, d0
+0000005E  4E4F                      77      trap #15
+00000060                            78      
+00000060                            79      *Load the bullet's coordinates from the table, shift accordingly due to fixed point,
+00000060                            80      *and draw the bullet at the current positio
+00000060  103C 0058                 81      move.b #DRAW_CIRCLE_COMMAND, d0
+Line 82 ERROR: Undefined symbol
+00000064  43F9 004DBD16             82      lea bulletTableX1, a1
+Line 83 ERROR: Undefined symbol
+0000006A  45F9 004DBD16             83      lea bulletTableY1, a2
+Line 84 ERROR: Undefined symbol
+00000070  47F9 004DBD16             84      lea bulletTableX2, a3
+Line 85 ERROR: Undefined symbol
+00000076  49F9 004DBD16             85      lea bulletTableY2, a4    
+0000007C  2211                      86      move.l (a1), d1
+0000007E  2412                      87      move.l (a2), d2
+00000080  E082                      88      asr.l #8, d2
+00000082  2802                      89      move.l d2, d4
+00000084  0684 00000010             90      add.l #BULLET_HEIGHT, d4
+0000008A  2601                      91      move.l d1, d3
+0000008C  0683 00000010             92      add.l #BULLET_WIDTH, d3
+00000092  4E4F                      93      trap #15
+00000094                            94      
+00000094                            95  
+00000094  4CDF 7FFF                 96      movem.l (sp)+, ALL_REG
+00000098  4E75                      97      rts
+0000009A                            98  
+0000009A                            99  *Called to delete the Bullet
+0000009A                           100  deleteBullet:
+0000009A                           101      *All we have to do to 'delete' the bullet is decrease the value of numBullets
+0000009A                           102      *This effectively stops the bullet from being updated/printed
+Line 103 ERROR: Undefined symbol
+0000009A  47F9 004DBD16            103      lea numBullets, a3
+000000A0  5393                     104      subi.l #1, (a3)
+000000A2                           105      ;move.l #1, (a2)
+000000A2                           106      
+000000A2  609E                     107      bra returnFromDelete
+000000A4                           108  
+000000A4                           109  *Velocity of bullet
+000000A4= 0000000A                 110  bulletVelocity dc.l 10
+000000A8                           111  
+000000A8                           112  
+000000A8                           113  
+000000A8                           114  
+000000A8                           115  
+000000A8                           116  
+000000A8                           117  
+000000A8                           118  
+000000A8                           119  
+000000A8                           120  
+000000A8                           121  
+000000A8                           122      
+000000A8                           123  
+000000A8                           124  
+000000A8                           125  
+000000A8                           126  
+000000A8                           127  
+000000A8                           128  
+000000A8                           129  
+000000A8                           130  
+000000A8                           131  
+Line 132 WARNING: END directive missing, starting address not set
+
+8 errors detected
+1 warning generated
+
+
+SYMBOL TABLE INFORMATION
+Symbol-name         Value
+-------------------------
+ALL_REG             7FFF
+BULLETVELOCITY      A4
+BULLET_ACCELERATION  1
+BULLET_HEIGHT       10
+BULLET_STARTING_X_POSITION  28
+BULLET_TOP_Y_POSITION  1B328
+BULLET_VELOCITY     1E
+BULLET_WIDTH        10
+CHECKNUMBULLETS     0
+DELETEBULLET        9A
+DRAWBULLET          4A
+DRAW_CIRCLE_COMMAND  58
+GET_USER_INPUT_COMMAND  13
+PURPLE              800080
+RETURNFROMDELETE    42
+SET_FILL_COLOR_COMMAND  51
+SET_PEN_COLOR_COMMAND  50
+TOP_SIDE_OF_SCREEN  0
+UPDATEBULLET        18
