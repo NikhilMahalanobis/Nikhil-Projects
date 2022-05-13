@@ -1,0 +1,132 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="pch.cpp" />
+    <ClCompile Include="Foo.cpp">
+      <Filter>Support Classes</Filter>
+    </ClCompile>
+    <ClCompile Include="SListTests.cpp">
+      <Filter>Tests</Filter>
+    </ClCompile>
+    <ClCompile Include="FooTests.cpp">
+      <Filter>Tests</Filter>
+    </ClCompile>
+    <ClCompile Include="VectorTests.cpp">
+      <Filter>Tests</Filter>
+    </ClCompile>
+    <ClCompile Include="HashMapTests.cpp">
+      <Filter>Tests</Filter>
+    </ClCompile>
+    <ClCompile Include="DefaultHashTest.cpp">
+      <Filter>Tests</Filter>
+    </ClCompile>
+    <ClCompile Include="DatumTests.cpp">
+      <Filter>Tests</Filter>
+    </ClCompile>
+    <ClCompile Include="ScopeTests.cpp">
+      <Filter>Tests</Filter>
+    </ClCompile>
+    <ClCompile Include="AttributedFoo.cpp">
+      <Filter>Support Classes</Filter>
+    </ClCompile>
+    <ClCompile Include="TestModuleInitializer.cpp">
+      <Filter>Tests</Filter>
+    </ClCompile>
+    <ClCompile Include="AttributeTests.cpp">
+      <Filter>Tests</Filter>
+    </ClCompile>
+    <ClCompile Include="MonsterFoo.cpp">
+      <Filter>Support Classes</Filter>
+    </ClCompile>
+    <ClCompile Include="JsonTestParseHelper.cpp">
+      <Filter>Support Classes</Filter>
+    </ClCompile>
+    <ClCompile Include="JsonParseCoordinatorTest.cpp">
+      <Filter>Tests</Filter>
+    </ClCompile>
+    <ClCompile Include="JsonTableParseHelperTest.cpp">
+      <Filter>Tests</Filter>
+    </ClCompile>
+    <ClCompile Include="FactoryTests.cpp">
+      <Filter>Tests</Filter>
+    </ClCompile>
+    <ClCompile Include="GameObjectTests.cpp">
+      <Filter>Tests</Filter>
+    </ClCompile>
+    <ClCompile Include="Avatar.cpp">
+      <Filter>Support Classes</Filter>
+    </ClCompile>
+    <ClCompile Include="ActionTests.cpp">
+      <Filter>Tests</Filter>
+    </ClCompile>
+    <ClCompile Include="EventTests.cpp">
+      <Filter>Tests</Filter>
+    </ClCompile>
+    <ClCompile Include="EventSubscribers.cpp">
+      <Filter>Support Classes</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="pch.h" />
+    <ClInclude Include="Foo.h">
+      <Filter>Support Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="ToStringSpecializations.h">
+      <Filter>Support Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="AttributedFoo.h">
+      <Filter>Support Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="MonsterFoo.h">
+      <Filter>Support Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="JsonTestParseHelper.h">
+      <Filter>Support Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="Avatar.h">
+      <Filter>Support Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="EventSubscribers.h">
+      <Filter>Support Classes</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Support Classes">
+      <UniqueIdentifier>{6814e02b-5e16-4504-9f60-2a9526a2ca83}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Tests">
+      <UniqueIdentifier>{1ea4ff76-235d-4a10-8558-996cfe822221}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Content">
+      <UniqueIdentifier>{d969bad4-8f3d-481a-b183-ccb4bcd51c9f}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="TestScopeClass.json">
+      <Filter>Support Classes</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <CopyFileToFolders Include="TestScope.json">
+      <Filter>Content</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="TestGameObject.json">
+      <Filter>Content</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="TestAction.json">
+      <Filter>Content</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="TestActionListFalse.json">
+      <Filter>Content</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="TestActionListTrue.json">
+      <Filter>Content</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="TestActionCreateAndDeleteAction.json">
+      <Filter>Content</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="TestActionList.json">
+      <Filter>Content</Filter>
+    </CopyFileToFolders>
+  </ItemGroup>
+</Project>

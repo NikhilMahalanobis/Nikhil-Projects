@@ -1,0 +1,27 @@
+{
+	"Players": {
+		"type": "table",
+		"value": [
+			{
+				"type": "table",
+				"class": "AttributedFoo",
+				"value": {
+					"ExternalString": {
+						"type": "string",
+						"value": "Ogre"
+					}
+				}
+			},
+			{
+				"type": "table",
+				"class": "AttributedFoo",
+				"value": {
+					"External Integer": {
+						"type": "integer",
+						"value": 100
+					}
+				}
+			}
+		]
+	}
+}
