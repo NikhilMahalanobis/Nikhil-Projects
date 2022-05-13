@@ -1,0 +1,60 @@
+{
+	"Name": {
+		"type": "string",
+		"value": "Scene"
+	},
+	"Tag": {
+		"type": "string",
+		"value": "root"
+	},
+	"Layer": {
+		"type": "integer",
+		"value": 0
+	},
+	"Transform": {
+		"type": "matrix",
+		"value": "1 0 0 0 0 1 0 0 0 0 1 0 0 0 0 1"
+	},
+	"TestFloat": {
+		"type": "float",
+		"value": 0.0
+	},
+	"Children": {
+		"type": "table",
+		"value": [
+			{
+				"class": "Avatar",
+				"type": "table",
+				"value": {
+					"Name": {
+						"type": "string",
+						"value": "Child Name"
+					}
+				}
+			}
+		]
+	},
+	"Actions": {
+		"type": "table",
+		"value": [
+			{
+				"class": "ActionIncrement",
+				"type": "table",
+				"value": {
+					"Name": {
+						"type": "string",
+						"value": "Increment TestFloat"
+					},
+					"Step": {
+						"type": "float",
+						"value": 5.0
+					},
+					"Target": {
+						"type": "string",
+						"value": "TestFloat"
+					}
+				}
+			}
+		]
+	}
+}
