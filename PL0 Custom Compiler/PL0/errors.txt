@@ -1,0 +1,403 @@
+Just a simple list of ALL possible errors our compiler can detect.
+
+1.	Use = instead of :=.
+var x = 10;
+begin
+	x := 20;
+end.
+
+2.	= must be followed by a number.
+var x = ;
+begin
+	x := 20;
+end.
+
+3.	Identifier must be followed by =.
+var x 10;
+begin
+	x := 20;
+end.
+
+4.	const, var, procedure must be followed by identifier.
+var ;
+begin
+	x := 20;
+end.
+
+5.	Semicolon or comma missing.
+var x y;
+begin
+	x := y + 20;
+end.
+
+6.	Incorrect symbol after procedure declaration.
+No procedure
+7.	Statement expected.
+?
+8.	Incorrect symbol after statement part in block.
+?
+9.	Period expected.
+var x;
+begin
+	x := 10 + 20;
+end
+
+10.	Semicolon between statements missing.
+var x, y;
+begin
+	x := 10 + 20
+	y :+ 30 + 40;
+end.
+
+11.	Undeclared identifier.
+var x;
+begin
+	y := x + 10;
+end.
+
+12.	Assignment to constant or procedure is not allowed.
+const X = 10;
+begin
+	X := 20;
+end.
+
+13.	Assignment operator expected.
+var x;
+begin
+	x 20;
+end.
+
+14.	call must be followed by an identifier.
+no call
+
+15.	Call of a constant or variable is meaningless.
+no call
+
+16.	then	 expected.
+var x = 10;
+begin
+	if x < 20 
+	x := 20
+end. 
+
+17.	Semicolon or } expected.
+var x
+begin
+	x := 20;
+end.
+
+18.	do expected.
+var x = 10;
+begin
+	while x < 20 
+	x := 20;
+end.
+
+19.	Incorrect symbol following statement.
+?
+20.	Relational operator expected.
+var x = 10, y = 20;
+begin
+	if x := y
+	then x := 20;
+end.
+
+21.	Expression must not contain a procedure identifier.
+no procedure
+
+22.	Right parenthesis missing.
+var x = 10, y = 20;
+begin
+	if (x < y
+	then x := 20;
+end.
+
+23.	The preceding factor cannot begin with this symbol.
+var x, y;
+begin
+	x := 10;
+	y := *x + 50;
+end.
+
+24.	An expression cannot begin with this symbol.
+?
+25.	This number is too large.
+Any program that has > 200 lines of code
+
+26.	Level is larger than the maximum allowed lexicographical levels.
+no procedure so this isn't a problem
+27. 	All registers in use
+
+28.	Variable not initialized
+29. 	Identifier expected after read/write
+var x, y;
+begin
+	x := 10;
+	read
+end.
+
+30. 	code exceeds MAX_CODE_SIZE
+var x = 0;
+begin
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+	x := x + 5;
+end.
