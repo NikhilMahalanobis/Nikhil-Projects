@@ -1,0 +1,1 @@
+To open the project, go into the "source" folder and open the "OpenGL_Framework.sln" file. From there you can Start Without Debugging and play in-IDE, or build the applicatin and run it through the .exe
